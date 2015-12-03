@@ -1,0 +1,120 @@
+Fun challenge with a nice gotcha in the pricing algorithm.
+
+I just want to walk you through the code and point out a few areas.
+
+Approach
+I took an approach to make this more production-like, hence all the error classes inheriting
+from StanardError, and wrapping the execution as a rake task. I tried to make the error 
+handling something a production support person could read and possibly use to fix the error
+then and there, rather than throwing up their hands and waiting for 2nd/3rd level support
+to pick up.
+
+Gemfile
+Big believer in Gemfiles and Bundler, I still come across people who think they're more 
+trouble than they're worth. I typically invoke bundler as follows - 
+
+bundle install --binstubs --jobs 4 --path vendor/bundle
+
+I use '--jobs 4' as that is how many CPU I have on my current dev box. I have found
+the parallel execution of bundler relatively stable (I have seen failures in 
+pathalogical testing on Bamboo - 30 agents all running '--jobs 8'), and it does save
+a lot of time. You do need a recent Bundler to use that (1.9+ I think).
+
+When developing, I add a "--with development" as well to get the pry gems. You need a Bundler
+at 1.10.4+, I think, to use the --with feature. --without has been around forever, but --with
+is new-ish. See the "optional: true" in the Gemfile for how this works. 
+
+Rake files
+
+I prefer delivering rake files rather than shell/bat files, no platform issues that way.
+Makes it easier to run on most CI platforms too.
+
+These are all pretty standard, only a few things need to be pointed out.
+
+- I like to use Rake::FileList to load all the libs I write in one go.
+- I add logger to the Kernel module, and use a closure to hold the
+  reference to the instance. logger is a hang-over from my 
+  days as a Perl programmer, using Log4perl. logger was that libraries
+  way to access the singleton instance of the logger. I could have used
+  Log4r, but Ruby's built-in logger is more than sufficient for this example.
+  If you want to see the logging, set LOGLEVEL to DEBUG in your envvars.
+- logger uses a StringIO when run from RSpec - this means I dont need to
+  mock anything, its super-fast to write to memory and it all goes away when
+  RSpec shuts down. I hate test harnesses that sprinkle output all over your 
+  file system/database/network sockets/screen.
+
+RSpec
+I think I'm pretty handy with RSpec, hopefully that comes across in my specs.
+If you want to see a coverage report, set COVERAGE to true in your envvars and
+run "bundle exec rake spec". The HTML coverage report is in
+reports/coverage/index.html.
+RSpec also writes an HTML report and JUnit XML file, for consumption by CI tools
+like Jenkins/Bamboo etc. With a few lines in .rspec and the Gemfile you get a lot
+of integration functionality.
+One thing to note is there is no option to pick color output from the .rspec file
+or the RSpec rake task. The rake task can run as-is on a CI platform.
+The color output escapes can make looking at a log on Jenkins/Bamboo a real mess.
+If I need color, I turn that on from an envvar (RSPEC_OPTS from memory).
+
+Config Files
+Pricing.yaml - tried to stick to the same naming/format as the challenge PDF
+Control.yaml - allows for loading different order-format parsers, pricing files, output
+locations, output formatters (e.g. DB/HTML/email ). Took this approach from an old talk
+from Sandi Metz. Rake task defaults to the one included in submission, but can specify an
+alternate as the second arg to the rake task.
+
+Solution
+
+Basic approach is to use a pluggable strategy approach, and pick the strategy indicated
+in the control file, specified as the optional argument to the order_runnner rake task.
+
+Almost all the heavy lifting is in the lib/pricer/default.rb file, in the '.price_for_type'
+method.
+
+This uses recursion to find a valid combination of bundles and sub-bundles to fulfill an
+order. If no combination of bundles can fulfill, it returns a sentinal, and the formatter
+uses that to indicate no pricing possible.
+
+Most of the logic centres around picking the biggest initial bundle possible, then handling
+the cases where a valid set of sub-bundles need to be found.
+
+I found one degenerate case where the basic approach fails, so there is a second strategy 
+embedded in there. This significantly complicated the logic, and I dont know if I've hit the
+true algorithm yet. But I cant make it break. I would have to prove the approach through
+an inductive analysis, which I havent done since like 1997. The degenerate case is noted
+in the code, and is basically where we fall back to using a single bundle, instead of
+multiples, to partially satisfy the order, and then look for valid sub-bundle combinations
+from there.
+
+Nearly all logging is in there, if you want to see it, set your LOGLEVEL to DEBUG before
+running the rake task.
+
+Adding the combinations used to determine the price also occludes the code a little, I suspect
+a few helper methods could clear it a little. I left it all in the method to make the flow of
+retries/recalculations explicit. I suspect the first refactoring would be to collapse repeated
+code to helpers.
+
+As an aside, I also tried an asynchronous approach with exception handling to short-circuit
+testing logic etc, but in the end it was too hard to debug. I suspect if we analyse the
+recursive approach a bit more for cases where we could jump out of the stack at various 
+points, rather than unwinding the recursion via sentinals, a simpler solution might be
+possible. That might also reveal a tail-recursion optimised solution. A co-routine
+approach could be fun too.
+
+Finally, I wasn't going to handle unfulfillable orders, but in the end it was easy, so it is
+in the default formatter too. If you want an example, run with the order_file parameter set
+to orders_bad.txt, or orders_mixed.txt. These have unfulfillable order lines.
+
+Execution
+Assuming you have a relatively recent Ruby, and at least the Bundler gem installed therein,
+just do the following - 
+
+bundle install --binstubs --jobs 4 --path vendor/bundle
+bundle exec rake spec (add COVERAGE=true for a coverage report)
+bundle exec rake order_runner[<path_to_order_file>]
+
+I suggest using the provided 'orders_good.txt' first.
+
+The order_runner task takes an optional second argument, the control file for loading
+different strategies/pricing/output. If not specified, it defaults to the one in 
+config/control.yaml

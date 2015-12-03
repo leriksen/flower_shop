@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="rspec" tests="31" failures="0" errors="0" time="0.564056" timestamp="2015-11-24T15:20:57+11:00">
+  <!-- Randomized with seed 34783 -->
+  <properties/>
+  <testcase classname="spec.formatter_spec" name="Formatter::Default ctor can detect that drain is an IO object directly" file="./spec/formatter_spec.rb" time="0.024002"/>
+  <testcase classname="spec.formatter_spec" name="Formatter::Default ctor can detect if drain is not IO object" file="./spec/formatter_spec.rb" time="0.001000"/>
+  <testcase classname="spec.formatter_spec" name="Formatter::Default ctor can detect if drain is an string representation of IO object" file="./spec/formatter_spec.rb" time="0.000000"/>
+  <testcase classname="spec.formatter_spec" name="Formatter::Default.format records the order in the correct format" file="./spec/formatter_spec.rb" time="0.002000"/>
+  <testcase classname="spec.controller_spec" name="Controller ctor should respond to #new" file="./spec/controller_spec.rb" time="0.005001"/>
+  <testcase classname="spec.controller_spec" name="Controller ctor with valid yaml has resources that respond correctly" file="./spec/controller_spec.rb" time="0.001000"/>
+  <testcase classname="spec.controller_spec" name="Controller ctor with valid yaml can build the required resources" file="./spec/controller_spec.rb" time="0.001000"/>
+  <testcase classname="spec.controller_spec" name="Controller ctor with valid yaml with parser and syntax can build the required resources" file="./spec/controller_spec.rb" time="0.001001"/>
+  <testcase classname="spec.controller_spec" name="Controller ctor with valid yaml with parser and syntax has resources that respond correctly" file="./spec/controller_spec.rb" time="0.001000"/>
+  <testcase classname="spec.controller_spec" name="Controller ctor with valid yaml, but undeclared strategy raises with informative message" file="./spec/controller_spec.rb" time="0.007001"/>
+  <testcase classname="spec.controller_spec" name="Controller ctor with invalid yaml raises error" file="./spec/controller_spec.rb" time="0.001000"/>
+  <testcase classname="spec.runner_spec" name="Runner ctor control file parameter when missing raises error" file="./spec/runner_spec.rb" time="0.002001"/>
+  <testcase classname="spec.runner_spec" name="Runner ctor control file parameter raises error when  unreadable" file="./spec/runner_spec.rb" time="0.002000"/>
+  <testcase classname="spec.runner_spec" name="Runner ctor control file parameter raises error when  not a file" file="./spec/runner_spec.rb" time="0.002000"/>
+  <testcase classname="spec.runner_spec" name="Runner ctor order file parameter raises error when  unreadable" file="./spec/runner_spec.rb" time="0.001000"/>
+  <testcase classname="spec.runner_spec" name="Runner ctor order file parameter raises error when  not a file" file="./spec/runner_spec.rb" time="0.002000"/>
+  <testcase classname="spec.runner_spec" name="Runner ctor order file parameter when missing raises error" file="./spec/runner_spec.rb" time="0.001001"/>
+  <testcase classname="spec.runner_spec" name="Runner ctor with readable param files raises if bad yaml" file="./spec/runner_spec.rb" time="0.002000"/>
+  <testcase classname="spec.runner_spec" name="Runner ctor with readable param files creates required resources" file="./spec/runner_spec.rb" time="0.004000"/>
+  <testcase classname="spec.runner_spec" name="Runner.run can parse an order and calculate price" file="./spec/runner_spec.rb" time="0.005001"/>
+  <testcase classname="spec.parser_spec" name="Parser::Default reading input can iterate" file="./spec/parser_spec.rb" time="0.000000"/>
+  <testcase classname="spec.parser_spec" name="Parser::Default reading input can parse using default syntax" file="./spec/parser_spec.rb" time="0.000000"/>
+  <testcase classname="spec.pricer_spec" name="Pricer::Default ctor with bad yaml file raises error" file="./spec/pricer_spec.rb" time="0.001000"/>
+  <testcase classname="spec.pricer_spec" name="Pricer::Default with valid yaml always calculated" file="./spec/pricer_spec.rb" time="0.219022"/>
+  <testcase classname="spec.pricer_spec" name="Pricer::Default with valid yaml calculates correct price if with only sub-bundle matches" file="./spec/pricer_spec.rb" time="0.003000"/>
+  <testcase classname="spec.pricer_spec" name="Pricer::Default with valid yaml detects unfillable order" file="./spec/pricer_spec.rb" time="0.010001"/>
+  <testcase classname="spec.pricer_spec" name="Pricer::Default with valid yaml calculates correct price if multisub bundles" file="./spec/pricer_spec.rb" time="0.005001"/>
+  <testcase classname="spec.pricer_spec" name="Pricer::Default with valid yaml calculates correct price if mixed bundle match" file="./spec/pricer_spec.rb" time="0.006001"/>
+  <testcase classname="spec.pricer_spec" name="Pricer::Default with valid yaml calculates correct price if lower bundle match" file="./spec/pricer_spec.rb" time="0.002000"/>
+  <testcase classname="spec.pricer_spec" name="Pricer::Default with valid yaml calculates correct price if all bundle match" file="./spec/pricer_spec.rb" time="0.002000"/>
+  <testcase classname="spec.pricer_spec" name="Pricer::Default with valid yaml calculates correct price if exact bundle match" file="./spec/pricer_spec.rb" time="0.001000"/>
+</testsuite>

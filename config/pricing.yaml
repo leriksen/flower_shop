@@ -1,0 +1,18 @@
+--- 
+lillies: 
+  bundles: 
+    3: 995
+    6: 1695
+    9: 2495
+  code: L09
+roses: 
+  bundles: 
+    10: 1299
+    5: 699
+  code: R12
+tulips: 
+  bundles: 
+    3: 595
+    5: 995
+    9: 1699
+  code: T58

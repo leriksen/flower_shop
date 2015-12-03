@@ -1,0 +1,11 @@
+pricer:
+  strategy: default
+  data: config/pricing.yaml
+
+formatter:
+  strategy: default
+  data: STDOUT
+
+parser:
+  strategy: default
+  syntax: default
