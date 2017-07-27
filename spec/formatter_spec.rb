@@ -20,7 +20,7 @@ describe Formatter::Default do
     it 'can detect if drain is not IO object' do
       drain = 'file_name'
       expect(drain).to receive(:constantize).and_raise(NameError)
-      expect(File).to receive(:open).with(drain, 770).and_return(true)
+      expect(File).to receive(:open).with(drain, instance_of(Integer)).and_return(true)
       subject.new drain
     end
   end
