@@ -1,16 +1,21 @@
 class Syntax
   class Default
-    # this syntax matcher expects lines of the form "XDD D+" - everything else raises
+    # this syntax matcher expects lines of the form "D+ XDD" - everything else raises
     def self.process(line)
       fields = line.split
-      if fields.length > 2
+      if fields.length != 2
         raise BadOrderFormatError, "line does not match the require format of 'type amount' - #{line}"
       end
 
-      raise BadOrderFormatError, "bad amount field #{fields[0]}" unless fields[0] =~ /^\d+$/
+      begin
+        amount = Integer(fields[0])
+      rescue ArgumentError
+        raise BadOrderFormatError, "bad amount field #{fields[0]}"
+      end
+
       raise BadOrderFormatError, "bad type field #{fields[1]}"   unless fields[1] =~ /^[A-Z]\d\d$/
 
-      [fields[0].to_i, fields[1]]
+      [amount, fields[1]]
     end
 
     class BadOrderFormatError < StandardError; end

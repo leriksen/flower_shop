@@ -31,3 +31,27 @@ describe Parser::Default do
     end
   end
 end
+
+describe Syntax::Default do
+  subject {described_class}
+
+  let(:exception_klass) {"#{described_class}::BadOrderFormatError".constantize}
+
+  context '#process' do
+    it 'throws if line is too few fields for syntax' do
+      expect{subject.process('field1')}.to raise_error(exception_klass)
+    end
+
+    it 'throws if line is too many fields for syntax' do
+      expect{subject.process('field1 field2 field3')}.to raise_error(exception_klass)
+    end
+
+    it 'throws if amount field isnt an integer' do
+      expect{subject.process('field1 field2')}.to raise_error(exception_klass)
+    end
+
+    it 'throws if item field isnt correct format for syntax' do
+      expect{subject.process('10 field2')}.to raise_error(exception_klass)
+    end
+  end
+end
